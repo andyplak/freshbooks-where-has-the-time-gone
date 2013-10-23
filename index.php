@@ -1,6 +1,6 @@
 <?php
 require('config.php');
-require('lib/FreshBooksRequest.php');
+require('model/clients.php');
 
 
 
@@ -14,33 +14,23 @@ require('lib/FreshBooksRequest.php');
 // Setup the login credentials
 FreshBooksRequest::init(FB_SUBDOMAIN, TOKEN);
 
-/**********************************************
- * Fetch all active clients
- **********************************************/
-$fb = new FreshBooksRequest('client.list');
-$fb->post(array(
-    'folder' => 'active'
-));
-$fb->request();
-if($fb->success())
-{
-    echo '<p>Clients</p><ul>';
-    $response = $fb->getResponse();
-    $clients = $response['clients']['client'];
-    foreach($clients as $client) {
-       echo '<li>'.$client['organization'].'</li>';
+$clients = new Clients();
+if( $client_data = $clients->loadData() ) {
+    echo '<ul>';
+    foreach( $client_data as $client ) {
+        echo '<li>'.$client['organization'].'</li>';
     }
     echo '</ul>';
+}else{
+    var_dump( $clients->getError() );
 }
-else
-{
-    echo $fb->getError();
-    var_dump($fb->getResponse());
-}
+
+
 
 /**********************************************
  * Fetch all active projects
  **********************************************/
+/*
 $fb = new FreshBooksRequest('project.list');
 $fb->request();
 if($fb->success())
@@ -82,7 +72,7 @@ else
     var_dump($fb->getResponse());
 }
 
-
+*/
 
 /**********************************************
  * List invoices from a specific client
