@@ -2,12 +2,12 @@
 
 //require('/lib/FreshBooksRequest.php');
 
-class Clients extends FreshBooksRequest {
+class Projects extends FreshBooksRequest {
 
-	private $clients;
+	private $projects;
 
-	public function __construct( $options=array('folder' => 'active', 'per_page' => 100) ) {
-		parent::__construct('client.list');
+	public function __construct( $options=array('per_page' => 100) ) {
+		parent::__construct('project.list');
 		$this->post( $options );
 	}
 
@@ -19,8 +19,8 @@ class Clients extends FreshBooksRequest {
 		$this->request();
 		if( $this->success() ) {
 		  $response = $this->getResponse();
-		  $this->clients = $response['clients']['client'];
-		  return $this->clients;
+		  $this->projects = $response['projects']['project'];
+		  return $this->projects;
 		}else{
 		  return false;
 		}

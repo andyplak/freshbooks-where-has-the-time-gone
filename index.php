@@ -1,18 +1,24 @@
 <?php
 require('config.php');
+require('/lib/FreshBooksRequest.php');
 require('model/clients.php');
-
-
+require('model/projects.php');
+require('model/staff.php');
+require('model/tasks.php');
+require('model/time_entries.php');
 
 // Receive filter values / process with default
 // Collect Data
 // Display via views
 
 
-
-
 // Setup the login credentials
 FreshBooksRequest::init(FB_SUBDOMAIN, TOKEN);
+
+?>
+<h2>Clients</h2>
+
+<?php
 
 $clients = new Clients();
 if( $client_data = $clients->loadData() ) {
@@ -25,73 +31,69 @@ if( $client_data = $clients->loadData() ) {
     var_dump( $clients->getError() );
 }
 
+?>
+<h2>Projects</h2>
+<?php
 
-
-/**********************************************
- * Fetch all active projects
- **********************************************/
-/*
-$fb = new FreshBooksRequest('project.list');
-$fb->request();
-if($fb->success())
-{
-    //echo '<p>Projects</p><ul>';
-    $response = $fb->getResponse();
-    $projects = $response['projects']['project'];
-    foreach($projects as $project) {
+$projects = new Projects();
+if( $data = $projects->loadData() ) {
+    echo '<ul>';
+    foreach( $data as $project ) {
         echo '<li>'.$project['name'].'</li>';
     }
     echo '</ul>';
-}
-else
-{
-    echo $fb->getError();
-    var_dump($fb->getResponse());
+}else{
+    var_dump( $projects->getError() );
 }
 
-$fb = new FreshBooksRequest('time_entry.list');
-$fb->post(array(
-    'date_from' => '2013-09-01',
-    'date_to' => '2013-09-30',
-    'per_page' => 100
-));
-$fb->request();
-if($fb->success())
-{
-    $response = $fb->getResponse();
-var_dump($response['time_entries']['@attributes']);
-    $time_entries = $response['time_entries']['time_entry'];
-    foreach($time_entries as $time_entry) {
+?>
+<h2>Staff</h2>
+<?php
+
+$staff = new Staff();
+if( $data = $staff->loadData() ) {
+    echo '<ul>';
+    foreach( $data as $member ) {
+        echo '<li>'.$member['first_name'].' '.$member['last_name'].'</li>';
+    }
+    echo '</ul>';
+}else{
+    var_dump( $staff->getError() );
+}
+
+?>
+<h2>Tasks</h2>
+<?php
+
+$tasks = new Tasks();
+if( $data = $tasks->loadData() ) {
+    echo '<ul>';
+    foreach( $data as $task ) {
+        echo '<li>'.$task['name'].'</li>';
+    }
+    echo '</ul>';
+}else{
+    var_dump( $tasks->getError() );
+}
+
+
+?>
+<h2>Time Logged</h2>
+<?php
+
+$time_entries = new TimeEntries();
+if( $data = $time_entries->loadData() ) {
+    echo '<ul>';
+    foreach( $data as $time_entry ) {
         echo '<li>'.$time_entry['date'].' - '.$time_entry['hours'].'</li>';
     }
     echo '</ul>';
-}
-else
-{
-    echo $fb->getError();
-    var_dump($fb->getResponse());
-}
 
-*/
+    var_dump( $time_entries->getHoursBy('project') );
+    var_dump( $time_entries->getHoursBy('staff') );
+    var_dump( $time_entries->getHoursBy('task') );
+    var_dump( $time_entries->getHoursBy('date') );
 
-/**********************************************
- * List invoices from a specific client
- **********************************************/
-/*
-$fb = new FreshBooksRequest('invoice.list');
-$fb->post(array(
-    'client_id' => 41
-));
-$fb->request();
-if($fb->success())
-{
-    var_dump($fb->getResponse());
+}else{
+    var_dump( $time_entries->getError() );
 }
-else
-{
-    echo $fb->getError();
-    var_dump($fb->getResponse());
-}
-*/
-
-?>
